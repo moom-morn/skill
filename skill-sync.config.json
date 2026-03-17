@@ -1,0 +1,19 @@
+{
+  "skillName": "newsearch-component-refactor",
+  "localSkillDir": "SearchSkill",
+  "cursorSkillDir": "~/.cursor/skills/newsearch-component-refactor",
+  "files": [
+    {
+      "source": "SKILL.md",
+      "target": "SKILL.md"
+    },
+    {
+      "source": "reference.md",
+      "target": "reference.md"
+    },
+    {
+      "source": "checklist.md",
+      "target": "checklist.md"
+    }
+  ]
+}

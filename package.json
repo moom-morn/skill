@@ -1,0 +1,16 @@
+{
+  "name": "cursor-skill-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地 Skill、Cursor Skill 和 GitHub 的手动同步工具",
+  "scripts": {
+    "sync:to-skill": "node scripts/sync-to-cursor-skill.js",
+    "sync:from-skill": "node scripts/sync-from-cursor-skill.js",
+    "sync:github": "node scripts/sync-github.js",
+    "sync:publish": "node scripts/sync-publish.js",
+    "sync:pull-skill": "node scripts/sync-pull-skill.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
