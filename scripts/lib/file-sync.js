@@ -1,4 +1,4 @@
-const fs = require("fs/promises");
+const fs = require("fs").promises;
 const os = require("os");
 const path = require("path");
 
@@ -40,29 +40,36 @@ async function pathExists(targetPath) {
 async function loadConfig(rootDir) {
     const configPath = path.join(rootDir, "skill-sync.config.json");
     const content = await fs.readFile(configPath, "utf8");
-    return JSON.parse(content);
+    const config = JSON.parse(content);
+
+    const requiredFields = [
+        "localRulesDir",
+        "cursorRulesDir",
+        "localSkillRootDir",
+        "cursorSkillsRootDir",
+        "skillFiles"
+    ];
+
+    for (const fieldName of requiredFields) {
+        if (!(fieldName in config)) {
+            throw new Error("配置缺少字段: " + fieldName);
+        }
+    }
+
+    if (!Array.isArray(config.skillFiles) || config.skillFiles.length === 0) {
+        throw new Error("配置字段 skillFiles 必须是非空数组");
+    }
+
+    return config;
 }
 
 function getDirectories(rootDir, config) {
     return {
-        localSkillDir: resolveConfiguredPath(rootDir, config.localSkillDir),
-        cursorSkillDir: resolveConfiguredPath(rootDir, config.cursorSkillDir)
+        localRulesDir: resolveConfiguredPath(rootDir, config.localRulesDir),
+        cursorRulesDir: resolveConfiguredPath(rootDir, config.cursorRulesDir),
+        localSkillRootDir: resolveConfiguredPath(rootDir, config.localSkillRootDir),
+        cursorSkillsRootDir: resolveConfiguredPath(rootDir, config.cursorSkillsRootDir)
     };
-}
-
-function createMappings(fileList, sourceDir, targetDir) {
-    const mappings = [];
-
-    for (const item of fileList) {
-        mappings.push({
-            sourceRelativePath: item.source,
-            targetRelativePath: item.target,
-            sourcePath: path.join(sourceDir, item.source),
-            targetPath: path.join(targetDir, item.target)
-        });
-    }
-
-    return mappings;
 }
 
 async function assertDirectoryExists(directoryPath, description) {
@@ -71,6 +78,79 @@ async function assertDirectoryExists(directoryPath, description) {
     if (!exists) {
         throw new Error(description + "不存在: " + directoryPath);
     }
+}
+
+async function listAllFilesRecursive(rootDir) {
+    const result = [];
+
+    async function walk(currentDir) {
+        const entries = await fs.readdir(currentDir, {withFileTypes: true});
+
+        for (const entry of entries) {
+            const entryPath = path.join(currentDir, entry.name);
+
+            if (entry.isDirectory()) {
+                await walk(entryPath);
+                continue;
+            }
+
+            if (entry.isFile()) {
+                result.push(entryPath);
+            }
+        }
+    }
+
+    await walk(rootDir);
+    return result;
+}
+
+function createRulesMappings(sourceRulesDir, targetRulesDir, relativePrefix) {
+    return listAllFilesRecursive(sourceRulesDir).then(filePaths => {
+        const mappings = [];
+
+        for (const sourcePath of filePaths) {
+            const relativePath = path.relative(sourceRulesDir, sourcePath);
+            const targetPath = path.join(targetRulesDir, relativePath);
+
+            mappings.push({
+                sourceRelativePath: relativePrefix + "/" + relativePath,
+                sourcePath,
+                targetPath
+            });
+        }
+
+        return mappings;
+    });
+}
+
+async function listSkillNames(skillRootDir) {
+    const entries = await fs.readdir(skillRootDir, {withFileTypes: true});
+    const skillNames = [];
+
+    for (const entry of entries) {
+        if (entry.isDirectory()) {
+            skillNames.push(entry.name);
+        }
+    }
+
+    return skillNames;
+}
+
+async function createSkillMappings(skillRootSourceDir, skillRootTargetDir, skillFiles, relativePrefix) {
+    const skillNames = await listSkillNames(skillRootSourceDir);
+    const mappings = [];
+
+    for (const skillName of skillNames) {
+        for (const fileName of skillFiles) {
+            mappings.push({
+                sourceRelativePath: relativePrefix + "/" + skillName + "/" + fileName,
+                sourcePath: path.join(skillRootSourceDir, skillName, fileName),
+                targetPath: path.join(skillRootTargetDir, skillName, fileName)
+            });
+        }
+    }
+
+    return mappings;
 }
 
 async function copyMappings(mappings, actionLabel) {
@@ -84,7 +164,7 @@ async function copyMappings(mappings, actionLabel) {
         const sourceExists = await pathExists(item.sourcePath);
 
         if (!sourceExists) {
-            throw new Error("源文件不存在: " + item.sourcePath);
+            continue;
         }
 
         await fs.mkdir(path.dirname(item.targetPath), {recursive: true});
@@ -104,7 +184,8 @@ async function copyMappings(mappings, actionLabel) {
 module.exports = {
     assertDirectoryExists,
     copyMappings,
-    createMappings,
+    createRulesMappings,
+    createSkillMappings,
     getDirectories,
     loadConfig,
     pathExists,

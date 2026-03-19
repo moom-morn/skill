@@ -1,119 +1,107 @@
-# Skill 同步操作指南
+# rules + Skill 同步操作指南
 
-本文档说明如何在本地项目、Cursor Skill 和 GitHub 之间进行双向同步。
+本文档说明如何在本地项目、Cursor 本地目录和 GitHub 之间同步 `rules` 与多 Skill 内容。
 
 ## 1. 同步目标
 
-当前项目把本地目录 `SearchSkill/` 作为 Skill 源目录，并与下面的 Cursor 全局目录同步：
+本项目同步两类资源：
 
-```text
-~/.cursor/skills/newsearch-component-refactor/
-```
+- `rules/`：规则目录
+- `skillFile/`：Skill 根目录（每个子目录是一个 Skill）
 
-同步文件如下：
+对应 Cursor 目录：
 
-| 本地项目 | Cursor Skill |
-| --- | --- |
-| `SearchSkill/SKILL.md` | `~/.cursor/skills/newsearch-component-refactor/SKILL.md` |
-| `SearchSkill/reference.md` | `~/.cursor/skills/newsearch-component-refactor/reference.md` |
-| `SearchSkill/checklist.md` | `~/.cursor/skills/newsearch-component-refactor/checklist.md` |
+- `~/.cursor/rules/`
+- `~/.cursor/skills/`
 
-这些映射定义在 `skill-sync.config.json` 中。
+并通过 Git 上传到 GitHub。
 
 ## 2. 前置要求
 
 - 已安装 Node.js 20 或更高版本
-- 本地仓库已经配置好 GitHub 远端
-- 在 Cursor 终端或系统终端中进入项目根目录
+- 本地仓库已配置 GitHub 远端
+- 在终端进入项目根目录
 
 ```bash
 cd "/Users/chenwen/办公/skill"
 ```
 
-## 3. 首次初始化
+## 3. 本地目录约定
 
-如果这是你第一次使用这套同步方案，建议先执行下面的命令：
+### 3.1 rules
 
-```bash
-npm run sync:to-skill
-```
+- 本地：`rules/**`
+- Cursor：`~/.cursor/rules/**`
 
-这个命令会：
+规则目录会双向同步，目录结构保持一致。
 
-- 自动创建 `~/.cursor/skills/newsearch-component-refactor/`
-- 把本地 Skill 文件复制到 Cursor Skill 目录
+### 3.2 skillFile
 
-执行完成后，你就可以在 Cursor 中使用这份 Skill。
+- 本地：`skillFile/<SkillName>/`
+- Cursor：`~/.cursor/skills/<SkillName>/`
+
+系统会自动扫描 `skillFile` 下所有子目录。
+
+每个 Skill 默认同步以下文件：
+
+- `SKILL.md`
+- `reference.md`
+- `checklist.md`
+
+这些文件名由 `skill-sync.config.json` 的 `skillFiles` 控制。
 
 ## 4. 命令说明
 
 ### `npm run sync:to-skill`
 
-用途：本地项目 -> Cursor Skill
+用途：本地 -> Cursor
 
-适用场景：
+执行内容：
 
-- 你刚修改了 `SearchSkill/` 下的文档
-- 你想把本地版本发布到 Cursor 使用
-
-执行效果：
-
-- 读取 `skill-sync.config.json`
-- 按映射把本地文件复制到 `~/.cursor/skills/newsearch-component-refactor/`
+- `rules/` 同步到 `~/.cursor/rules/`
+- `skillFile/*` 同步到 `~/.cursor/skills/*`
 
 ### `npm run sync:from-skill`
 
-用途：Cursor Skill -> 本地项目
+用途：Cursor -> 本地
 
-适用场景：
+执行内容：
 
-- 你直接修改了 Cursor 全局 Skill
-- 你希望把 Cursor 中的最新版本回写到仓库
-
-执行效果：
-
-- 从 `~/.cursor/skills/newsearch-component-refactor/` 复制文件回本地 `SearchSkill/`
-- 如果 Cursor Skill 目录不存在，会直接报错并停止
+- `~/.cursor/rules/` 回写到 `rules/`
+- `~/.cursor/skills/*` 回写到 `skillFile/*`
 
 ### `npm run sync:github`
 
-用途：本地项目 <-> GitHub
+用途：本地仓库上传 GitHub
 
 执行流程：
 
-1. 读取当前 Git 分支
-2. 从 `origin/<当前分支>` 拉取最新内容
-3. 执行 `git add .`
+1. 读取当前分支
+2. `git pull origin <当前分支>`
+3. `git add .`
 4. 检查是否有待提交变更
-5. 如果有变更，自动生成提交信息并推送到 GitHub
+5. 有变更则自动 `commit` 并 `push`
 
 说明：
 
-- 该命令不会强制写死 `main`
-- 会按你当前所在分支执行同步
-- 如果没有本地变更，会提示并结束，不会空提交
+- “同步到 GitHub”就是执行该命令（或包含该命令的组合命令）
+- 没有变更时不会创建空提交
 
 ### `npm run sync:publish`
 
-用途：本地项目 -> Cursor Skill -> GitHub
+用途：本地 -> Cursor -> GitHub
 
-适用场景：
-
-- 你在本地改完 Skill，希望一次性发布到 Cursor 和 GitHub
+适合场景：本地改完 `rules` 或 `skillFile` 后一键发布。
 
 ### `npm run sync:pull-skill`
 
-用途：Cursor Skill -> 本地项目 -> GitHub
+用途：Cursor -> 本地 -> GitHub
 
-适用场景：
-
-- 你在 Cursor 里改完 Skill，希望一次性回写到仓库并同步到 GitHub
+适合场景：直接在 Cursor 目录改了内容后回写并上传。
 
 ## 5. 推荐工作流
 
-### 场景 A：你在本地仓库里修改了 Skill
-
-执行：
+### 场景 A：你在本地改了内容
 
 ```bash
 npm run sync:publish
@@ -121,12 +109,10 @@ npm run sync:publish
 
 结果：
 
-- Cursor Skill 更新
+- Cursor 更新
 - GitHub 更新
 
-### 场景 B：你在 Cursor 里直接改了 Skill
-
-执行：
+### 场景 B：你在 Cursor 目录改了内容
 
 ```bash
 npm run sync:pull-skill
@@ -134,74 +120,57 @@ npm run sync:pull-skill
 
 结果：
 
-- 本地仓库更新
+- 本地更新
 - GitHub 更新
 
-### 场景 C：你只想同步 GitHub，不动 Skill
-
-执行：
+### 场景 C：你只想上传 GitHub
 
 ```bash
 npm run sync:github
 ```
 
-## 6. 兼容旧命令
+## 6. 新增 Skill 的方式
 
-为了兼容你原来的使用习惯，保留了两个旧入口：
+以新增 `NewSkill` 为例：
 
-- `node sync.js`
-  - 等价于 `npm run sync:github`
-- `node push-skills.js`
-  - 等价于 `npm run sync:publish`
+1. 新建 `skillFile/NewSkill/`
+2. 放入 `SKILL.md`、`reference.md`、`checklist.md`
+3. 执行 `npm run sync:publish`
 
-推荐后续统一使用 `npm run` 命令，便于记忆和扩展。
+无需改脚本，`NewSkill` 会自动被同步到：
 
-## 7. 常见问题
+- `~/.cursor/skills/NewSkill/`
+- GitHub 仓库
 
-### 7.1 提示 `Cursor Skill 目录不存在`
+## 7. 兼容旧命令
 
-原因：你还没有把本地 Skill 首次发布到 Cursor 目录。
+- `node sync.js` 等价于 `npm run sync:github`
+- `node push-skills.js` 等价于 `npm run sync:publish`
 
-处理：
+建议优先使用 `npm run` 命令。
+
+## 8. 常见问题
+
+### 8.1 提示 Cursor 目录不存在
+
+先手动准备目录，或先执行一次：
 
 ```bash
 npm run sync:to-skill
 ```
 
-### 7.2 GitHub 同步时报冲突
+### 8.2 GitHub 同步冲突
 
-原因：远端分支和本地分支存在冲突，`git pull` 无法自动合并。
+处理步骤：
 
-处理方式：
+1. 手动解决冲突
+2. 确认代码正确
+3. 重新执行同步命令
 
-1. 先手动解决冲突
-2. 确认本地代码无误
-3. 再重新执行同步命令
+### 8.3 没有生成 commit
 
-### 7.3 没有生成 commit
+脚本检测到无变更时会自动跳过提交，这是正常行为。
 
-原因：脚本检测到没有本地变更。
+### 8.4 想调整 Skill 同步文件名
 
-这是正常行为，脚本不会创建空提交。
-
-### 7.4 想增加新的同步文件
-
-处理方式：
-
-编辑 `skill-sync.config.json`，在 `files` 中增加映射项，例如：
-
-```json
-{
-  "source": "examples.md",
-  "target": "examples.md"
-}
-```
-
-然后重新执行同步命令。
-
-## 8. 维护建议
-
-- 把本地仓库作为最终版本源
-- 把 Cursor Skill 作为运行时副本
-- 把 GitHub 作为备份和共享入口
-- 需要新增 Skill 文件时，优先先改 `skill-sync.config.json`
+编辑 `skill-sync.config.json` 的 `skillFiles` 数组后重新执行同步命令。

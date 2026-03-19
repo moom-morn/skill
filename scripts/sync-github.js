@@ -36,14 +36,14 @@ function createCommitMessage() {
     const hour = String(now.getHours()).padStart(2, "0");
     const minute = String(now.getMinutes()).padStart(2, "0");
     const second = String(now.getSeconds()).padStart(2, "0");
-    return "chore: sync skill workspace (" + year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second + ")";
+    return "chore: sync rules and skills (" + year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second + ")";
 }
 
 async function main() {
     const rootDir = path.resolve(__dirname, "..");
 
     console.log("==============================================");
-    console.log("开始同步本地项目与 GitHub");
+    console.log("开始同步本地项目（rules + skillFile）到 GitHub");
     console.log("==============================================\n");
 
     const branchResult = await runGit(rootDir, ["branch", "--show-current"], "读取当前分支");
@@ -70,7 +70,7 @@ async function main() {
     await runGit(rootDir, ["push", "origin", currentBranch], "推送本地变更到 GitHub");
 
     console.log("**********************************************");
-    console.log("GitHub 同步完成");
+    console.log("GitHub 同步完成（rules + skillFile）");
     console.log("**********************************************\n");
 }
 
