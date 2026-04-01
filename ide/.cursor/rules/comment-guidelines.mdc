@@ -1,0 +1,18 @@
+---
+description: 全局关键逻辑注释规范
+alwaysApply: true
+---
+
+# Comment Guidelines
+
+- 修改现有代码时，遇到不够直观的关键业务逻辑、数据转换、缓存分支时，补充简短注释说明目的。
+- 注释只解释“为什么这样做”或“这段逻辑在处理什么”，不要写显而易见的废话注释。
+- 注释保持精炼，优先写在复杂代码块上方，避免逐行翻译代码。
+- 变量名用驼峰命名，避免使用下划线。
+
+示例：
+
+```javascript
+// 优先使用缓存，避免重复请求并覆盖组件中的临时状态。
+const emoticonList = currentList.length ? currentList : await dispatch("getList")
+```
