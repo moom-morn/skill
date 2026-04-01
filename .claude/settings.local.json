@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/chenwen/办公/skill/**)",
+      "Bash(done)"
+    ]
+  }
+}

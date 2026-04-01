@@ -3,8 +3,6 @@ description: 全局回复、扫描缩写、单文件范围、Vue2 兼容与注�
 alwaysApply: true
 ---
 
-<!-- 使用：将本文件复制到业务仓库的 .cursor/rules/ -->
-
 # 全局核心规则
 
 ## 回复与输出
