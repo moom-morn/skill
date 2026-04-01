@@ -4,6 +4,8 @@ globs: "**/*.{vue,js}"
 alwaysApply: false
 ---
 
+<!-- 部署到 leisu_admin 后生效；本 skill 仓无 src 时 glob 可能不匹配，复制到业务项目 .cursor/rules/ 后按需改 globs -->
+
 # leisu_admin 项目规则
 
 **项目**：雷速体育管理后台。**栈**：Vue2 + Element UI + Node 12 + axios + dayjs + xlsx +
