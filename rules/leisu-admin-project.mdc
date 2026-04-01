@@ -8,18 +8,18 @@ alwaysApply: false
 
 # leisu_admin 项目规则
 
-**项目**：雷速体育管理后台。**栈**：Vue2 + Element UI + Node 12 + axios + dayjs + xlsx + ali-oss + 钉钉 H5。
+**项目**：雷速体育管理后台。**栈**：Vue2 + Element UI + Node 12 + axios + dayjs + xlsx +
 
 ## 强制
 
 - Vue2 选项式 API；禁止 `<script setup>`、Composition API、Vue3 语法。
-- 使用 Element：`el-form`、`el-table`、`el-pagination`、`el-dialog`。
+- 使用 Element：`el-form`、`el-table`、`el-pagination`、。
 - 分页字段：`pageNum`、`pageSize`、`total`（默认 1 / 10 / 0）。
 - 接口放 `src/api/`，封装 axios，接口内 `try/catch`。
 - 弹窗 `visible.sync`，关闭时重置表单。
 - 样式 `scoped`。
 - 方法名：`handleXXX`、`getXXXList`、`submitXXX`、`exportXXX`。
-- 日期用 dayjs，不用 moment；Excel 用 xlsx；上传 ali-oss；钉钉 H5 做兼容降级。
+- 日期用 dayjs，不用 moment；Excel 用 xlsx。
 - 缩进 2 空格、单引号、跟 ESLint。
 
 ## 输出（业务代码）
