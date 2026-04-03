@@ -11,6 +11,11 @@ const {
 
 async function main() {
     const rootDir = path.resolve(__dirname, "..");
+
+    console.log("==============================================");
+    console.log("开始同步本地到 Cursor（rules + skillFile）");
+    console.log("==============================================\n");
+
     const config = await loadConfig(rootDir);
     const directories = getDirectories(rootDir, config);
 

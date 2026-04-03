@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Claude Code 本地配置（包含个人记忆、设置，不应提交）
+.claude/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo

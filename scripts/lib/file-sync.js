@@ -104,23 +104,22 @@ async function listAllFilesRecursive(rootDir) {
     return result;
 }
 
-function createRulesMappings(sourceRulesDir, targetRulesDir, relativePrefix) {
-    return listAllFilesRecursive(sourceRulesDir).then(filePaths => {
-        const mappings = [];
+async function createRulesMappings(sourceRulesDir, targetRulesDir, relativePrefix) {
+    const filePaths = await listAllFilesRecursive(sourceRulesDir);
+    const mappings = [];
 
-        for (const sourcePath of filePaths) {
-            const relativePath = path.relative(sourceRulesDir, sourcePath);
-            const targetPath = path.join(targetRulesDir, relativePath);
+    for (const sourcePath of filePaths) {
+        const relativePath = path.relative(sourceRulesDir, sourcePath);
+        const targetPath = path.join(targetRulesDir, relativePath);
 
-            mappings.push({
-                sourceRelativePath: relativePrefix + "/" + relativePath,
-                sourcePath,
-                targetPath
-            });
-        }
+        mappings.push({
+            sourceRelativePath: relativePrefix + "/" + relativePath,
+            sourcePath,
+            targetPath
+        });
+    }
 
-        return mappings;
-    });
+    return mappings;
 }
 
 async function listSkillNames(skillRootDir) {

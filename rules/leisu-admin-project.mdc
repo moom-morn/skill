@@ -1,28 +1,24 @@
 ---
-description: leisu_admin 技术栈与业务代码强制规范（按需注入）
-globs: "**/*.{vue,js}"
+description: Project coding standards for leisu_admin (Vue 2 + Element UI + Node 12). Apply when working on .vue or .js files in this project.
+globs:
+  - "**/*.vue"
+  - "**/*.js"
 alwaysApply: false
 ---
 
-<!-- 部署到 leisu_admin 后生效；本 skill 仓无 src 时 glob 可能不匹配，复制到业务项目 .cursor/rules/ 后按需改 globs -->
+## 技术栈
+Vue 2 选项式 API + Element UI + axios + dayjs + xlsx，Node 12
 
-# leisu_admin 项目规则
+## 强制约束
+- 禁止 `<script setup>`、Composition API、Vue 3 语法
+- 禁止 `?.` `??` 等 ES2020+ 语法
+- 组件库：`el-form`、`el-table`、`el-pagination`
+- 分页字段：`pageNum` / `pageSize` / `total`（默认 1 / 10 / 0）
+- 接口文件放 `src/api/`，使用 axios 封装，内含 `try/catch`
+- 弹窗用 `visible.sync` 控制，关闭时重置表单
+- 样式加 `scoped`；缩进 2 空格；字符串用单引号
+- 方法命名：`handleXXX` / `getXXXList` / `submitXXX` / `exportXXX`
+- 日期处理用 dayjs；Excel 导出用 xlsx
 
-**项目**：雷速体育管理后台。**栈**：Vue2 + Element UI + Node 12 + axios + dayjs + xlsx +
-
-## 强制
-
-- Vue2 选项式 API；禁止 `<script setup>`、Composition API、Vue3 语法。
-- 使用 Element：`el-form`、`el-table`、`el-pagination`、。
-- 分页字段：`pageNum`、`pageSize`、`total`（默认 1 / 10 / 0）。
-- 接口放 `src/api/`，封装 axios，接口内 `try/catch`。
-- 弹窗 `visible.sync`，关闭时重置表单。
-- 样式 `scoped`。
-- 方法名：`handleXXX`、`getXXXList`、`submitXXX`、`exportXXX`。
-- 日期用 dayjs，不用 moment；Excel 用 xlsx。
-- 缩进 2 空格、单引号、跟 ESLint。
-
-## 输出（业务代码）
-
-- 直接给完整可运行代码；少废话；贴合现有目录结构。
-- 交互处自动加 `$message`、`$confirm` 等提示。
+## 输出要求
+给完整可运行代码；交互操作处加 `$message` / `$confirm`；贴合现有目录结构。

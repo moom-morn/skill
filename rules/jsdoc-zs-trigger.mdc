@@ -1,33 +1,34 @@
 ---
-description: 用户输入 zs 时，为当前符号生成标准 JSDoc 注释
-globs: "**/*.{js,vue,ts}"
+description: Generate standard JSDoc block comment for the nearest function, method, or class when the user types "zs". Use when asked to add documentation or when "zs" appears as a standalone trigger at the start of a message.
 alwaysApply: false
 ---
 
-# JSDoc 快捷触发（zs）
+## 触发条件
+用户输入 `zs`（句首单独出现）时，为光标所在的函数/方法/类生成 JSDoc 块注释。
 
-当用户单独或显著地输入 **zs**（注释的拼音简写）并期望补全/生成注释时：
+不要将 `zs` 解释为变量名或业务缩写。
 
-1. **含义**：视为请求为**当前光标附近的函数、方法、async 函数、类或导出**补充**标准 JSDoc**（不要用单行 `//` 代替块注释）。
-2. **放置位置**：紧贴在声明**上方**，与项目现有缩进一致。
-3. **内容要求**：
-   - 首行用一句英文或中文说明「做什么」（任选其一与用户上下文一致即可）。
-   - 为每个参数写 `@param {Type} paramName 说明`；对象参数可用 `@typedef` 或 `@param {Object} options` + `@property`。
-   - 有返回值写 `@returns {Type} 说明`；无显式返回值可写 `@returns {void}` 或省略（按团队习惯与函数实际一致）。
-   - 可能抛错时写 `@throws {Type} 条件`。
-   - `async` 函数：`@returns {Promise<Type>}`。
-4. **Vue2 组件**：`methods` 里同上，注释写在对应 `methodName()` 上一行；不改变 Vue2 语法（不用 `?.`、`??`）。
-5. **示例（函数）**：
+## 生成规则
+- 使用块注释 `/** */`，不用 `//`
+- 缩进与文件保持一致
+- 首行：一句话说明函数做什么
 
-```javascript
-/**
- * 根据 ID 拉取用户并写入表单。
- * @param {string|number} userId 用户 ID
- * @param {Object} [options] 可选配置
- * @param {boolean} [options.silent] 为 true 时不弹出错误提示
- * @returns {Promise<Object>} 解析后的用户对象
- * @throws {Error} 当 userId 无效或接口非 200 时
- */
+## 标签规范
+```
+@param {Type} name 说明
+@param {Object} opts 对象参数用 @property 补充子字段
+@returns {Type} 说明（async 函数用 Promise<Type>）
+@throws {Error} 触发条件（有抛错时写）
 ```
 
-6. **不要**：把 `zs` 当成变量名或业务缩写去「解释」；在本规则匹配的文件上下文中，默认按「生成 JSDoc」处理。
+## 示例输出
+```javascript
+/**
+ * 根据 ID 拉取用户信息并写入表单。
+ * @param {string|number} userId 用户 ID
+ * @param {Object} [opts]
+ * @param {boolean} [opts.silent] true 时不弹错误提示
+ * @returns {Promise<Object>}
+ * @throws {Error} userId 无效或接口异常时
+ */
+```

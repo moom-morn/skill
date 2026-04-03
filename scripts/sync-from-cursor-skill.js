@@ -11,11 +11,13 @@ const {
 
 async function main() {
     const rootDir = path.resolve(__dirname, "..");
-    console.log("当前目录: " + rootDir);
+
+    console.log("==============================================");
+    console.log("开始从 Cursor 回写到本地（rules + skillFile）");
+    console.log("==============================================\n");
+
     const config = await loadConfig(rootDir);
-    console.log(config);
     const directories = getDirectories(rootDir, config);
-    console.log("Cursor 目录: " + directories);
 
     await assertDirectoryExists(directories.cursorRulesDir, "Cursor rules 目录");
     await assertDirectoryExists(directories.cursorSkillsRootDir, "Cursor skills 根目录");

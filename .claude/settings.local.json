@@ -4,7 +4,22 @@
       "Bash(for f:*)",
       "Bash(do echo:*)",
       "Read(//Users/chenwen/办公/skill/**)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(wc -l /Users/chenwen/办公/skill/rules/*.mdc)",
+      "Bash(wc:*)",
+      "Bash(grep -E \"\\\\.\\(json|md|js\\)$\")",
+      "Bash(git:*)",
+      "WebFetch(domain:cursor.com)",
+      "WebFetch(domain:www.cursor.com)",
+      "WebFetch(domain:cursor.directory)",
+      "Bash(curl -s --max-time 15 \"https://cursor.com/cn/docs/rules\" -L -H \"User-Agent: Mozilla/5.0\")",
+      "Bash(curl -sv --max-time 20 \"https://cursor.com/cn/docs/rules\")",
+      "WebFetch(domain:web.archive.org)",
+      "Bash(curl -sv --max-time 15 \"https://agentskills.io/mcp\")",
+      "Bash(curl -s --max-time 15 \"https://agentskills.io/mcp\" -H \"Accept: application/json\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s --max-time 15 https://agentskills.io/mcp)",
+      "Bash(xxd ~/.cursor/mcp.json)"
     ]
   }
 }
