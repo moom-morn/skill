@@ -11,8 +11,11 @@ const {
 
 async function main() {
     const rootDir = path.resolve(__dirname, "..");
+    console.log("当前目录: " + rootDir);
     const config = await loadConfig(rootDir);
+    console.log(config);
     const directories = getDirectories(rootDir, config);
+    console.log("Cursor 目录: " + directories);
 
     await assertDirectoryExists(directories.cursorRulesDir, "Cursor rules 目录");
     await assertDirectoryExists(directories.cursorSkillsRootDir, "Cursor skills 根目录");

@@ -1,0 +1,33 @@
+---
+description: 用户输入 zs 时，为当前符号生成标准 JSDoc 注释
+globs: "**/*.{js,vue,ts}"
+alwaysApply: false
+---
+
+# JSDoc 快捷触发（zs）
+
+当用户单独或显著地输入 **zs**（注释的拼音简写）并期望补全/生成注释时：
+
+1. **含义**：视为请求为**当前光标附近的函数、方法、async 函数、类或导出**补充**标准 JSDoc**（不要用单行 `//` 代替块注释）。
+2. **放置位置**：紧贴在声明**上方**，与项目现有缩进一致。
+3. **内容要求**：
+   - 首行用一句英文或中文说明「做什么」（任选其一与用户上下文一致即可）。
+   - 为每个参数写 `@param {Type} paramName 说明`；对象参数可用 `@typedef` 或 `@param {Object} options` + `@property`。
+   - 有返回值写 `@returns {Type} 说明`；无显式返回值可写 `@returns {void}` 或省略（按团队习惯与函数实际一致）。
+   - 可能抛错时写 `@throws {Type} 条件`。
+   - `async` 函数：`@returns {Promise<Type>}`。
+4. **Vue2 组件**：`methods` 里同上，注释写在对应 `methodName()` 上一行；不改变 Vue2 语法（不用 `?.`、`??`）。
+5. **示例（函数）**：
+
+```javascript
+/**
+ * 根据 ID 拉取用户并写入表单。
+ * @param {string|number} userId 用户 ID
+ * @param {Object} [options] 可选配置
+ * @param {boolean} [options.silent] 为 true 时不弹出错误提示
+ * @returns {Promise<Object>} 解析后的用户对象
+ * @throws {Error} 当 userId 无效或接口非 200 时
+ */
+```
+
+6. **不要**：把 `zs` 当成变量名或业务缩写去「解释」；在本规则匹配的文件上下文中，默认按「生成 JSDoc」处理。
