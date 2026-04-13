@@ -1,0 +1,4 @@
+interface:
+  display_name: "NewSearch Component Refactor"
+  short_description: "Refactor Vue list pages to newMySearch patterns"
+  default_prompt: "Use $newsearch-component-refactor to refactor this Vue 2 list page to the standard newMySearch pattern."
