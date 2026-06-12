@@ -1,0 +1,1 @@
+- [工作目录根的规则](working-directory-rule.md) — 所有 .claude 操作必须跟随当前工作目录，优先级最高

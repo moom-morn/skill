@@ -1,0 +1,1 @@
+../../agents/rules/leisu-admin-project.md

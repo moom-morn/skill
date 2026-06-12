@@ -1,0 +1,1 @@
+../../agents/rules/jsdoc-zs-trigger.md
